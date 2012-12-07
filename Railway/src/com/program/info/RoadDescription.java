@@ -24,8 +24,7 @@ public class RoadDescription {
 	}
 
 	// конструктор со всеми параметрами
-	public RoadDescription(Ellipse2D.Float startPoint,
-			Ellipse2D.Float endPoint, float FullLength) {
+	public RoadDescription(Ellipse2D.Float startPoint, Ellipse2D.Float endPoint, float FullLength) {
 		start = startPoint;
 		end = endPoint;
 		length = FullLength;

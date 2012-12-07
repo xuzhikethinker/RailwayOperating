@@ -11,8 +11,5 @@ public class MainTabbedPan extends JTabbedPane{
 		setName("Editor");
 		setVisible(false);
 	}
-	
-	public void addTab(String title, EditorTabItem tab){
-		addTab(title, tab);
-	}
+
 }

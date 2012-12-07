@@ -1,7 +1,9 @@
 package com.program.info;
+import com.program.exceptions.LogicException;
+import com.program.validation.Validator;
 
 public class PointDescription {
-	private short number = 0;// номер
+	private short number = 0;// номер (задается, если ссылается не меньше, чем на 3 пути)
 	private boolean descript; // true - левосторонний, false - правосторонний
 	private String mark; // марка стрелочного перевода
 	private boolean normPosture; // нормальное положение + :true, - :false
@@ -15,12 +17,14 @@ public class PointDescription {
 		roadAmount = 0;
 	}
 
-	public PointDescription(short num, boolean desc, String m, boolean post) {
-		number = num;
-		descript = desc;
-		mark = m;
-		normPosture = post;
-		roadAmount = 0;
+	public PointDescription(short number, boolean descript, String mark,
+			boolean normPosture, short roadAmount) throws LogicException {
+		super();
+		this.number = number;
+		this.descript = descript;
+		this.mark = Validator.validateString(mark);
+		this.normPosture = normPosture;
+		this.roadAmount = roadAmount;
 	}
 
 	// задать номер
@@ -45,9 +49,9 @@ public class PointDescription {
 	}
 
 	// задать марку
-	public void setMark(String m) {
+	public void setMark(String m) throws LogicException {
 		if (roadAmount < 3)
-			mark = m;
+			mark = Validator.validateString(m);
 	}
 
 	// получить марку

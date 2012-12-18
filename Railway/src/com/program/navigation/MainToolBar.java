@@ -9,8 +9,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JToolBar;
 
-import com.program.exceptions.Errors;
-import com.program.exceptions.ExceptionElement;
 import com.program.exceptions.LogicException;
 
 
@@ -40,20 +38,22 @@ public class MainToolBar extends JToolBar implements IBar{
 	};
 
 	private void setObjects(){
-		JButton toolDeleteB = createButton("icons/delete.png", "Удалить линию");
-		JButton toolSettingsB = createButton("icons/settings.png", "Настройки");
+		JButton toolDeleteB = createButton("icons/delete.png","deleteButton", "Удалить линию");
+		JButton toolSettingsB = createButton("icons/settings.png", "settingsButton", "Настройки");
 		
-		toolDrawB = createButton(toolStartImage , "Начать рисование");
+		toolDrawB = createButton(toolStartImage , "drawButton","Начать рисование");
 		toolDrawB.addActionListener(drawListener);
 		
-		JButton toolCancelB = createButton("icons/cancel.png", "Отмена (ctrl+z)");
-		JButton toolNormalSizeB = createButton("icons/normal_size.png", "Начальные размеры картинки");
-		JButton toolStretchLeftB = createButton("icons/wide.png", "Расширить");
-		JButton toolStretchRightB = createButton("icons/narrow.png", "Сузить");
-		JButton toolStretchUpB = createButton("icons/up.png", "Расширить вверх");
-		JButton toolStretchDownB = createButton("icons/down.png", "Сузить вовнутрь");
-		JButton toolConnectRoadB = createButton("icons/connect_road.png", "Выбрать маршрут");
+		JButton toolCancelB = createButton("icons/cancel.png",  "cancelButton", "Отмена (ctrl+z)");
+		JButton toolNormalSizeB = createButton("icons/normal_size.png", "normalizeButton","Начальные размеры картинки");
+		JButton toolStretchLeftB = createButton("icons/wide.png", "widingButtong","Расширить");
+		JButton toolStretchRightB = createButton("icons/narrow.png", "narrowingButtong","Сузить");
+		JButton toolStretchUpB = createButton("icons/up.png", "stretchingUpButton","Расширить вверх");
+		JButton toolStretchDownB = createButton("icons/down.png", "stretchingDownButton","Сузить вовнутрь");
+		JButton toolConnectRoadB = createButton("icons/connect_road.png", "choosePathButton","Выбрать маршрут");
+		
 		JCheckBox toolShowPicture = new JCheckBox("Показывать рисунок");
+		toolShowPicture.setName("showPictureCheck");
 		toolShowPicture.setSelected(true);
 
 		add(toolDrawB);
@@ -69,71 +69,53 @@ public class MainToolBar extends JToolBar implements IBar{
 		add(toolShowPicture);
 	}
 	
-	private JButton createButton(String iconPath, String toolTipText){
+	private JButton createButton(String iconPath, String name, String toolTipText){
 		JButton button = new JButton(new ImageIcon(iconPath));
+		button.setName(name);
 		button.setToolTipText(toolTipText);
 		return button;
 	}
 
 	@Override
 	public boolean addListenerToComponent(AbstractButton button, ActionListener listener) throws LogicException {
-		if (button != null){
+		AbstractButton tool = findElement(button);
+		if (tool != null){
 			if (listener != null){
-				int length = getComponentCount();
-				for (int i=0; i< length; ++i){
-					if (getComponent(i).equals(button)){
-						AbstractButton temp = (AbstractButton)getComponent(i);
-						temp.addActionListener(listener);
-						return true;
-					}
+					tool.addActionListener(listener);
+					return true;
 				}
 				return false;
 			} else {
-				throw new LogicException(Errors.NULL_ELEMENT, new ExceptionElement("Нулевой элемент", this.getClass()));
-			}
-		} else{
-			throw new LogicException(Errors.NULL_ELEMENT, new ExceptionElement("Нулевой элемент", this.getClass()));
+				return false;
 		}
 	}
 
 	@Override
 	public boolean addListenerToComponent(String buttonName, ActionListener listener) throws LogicException {
-		if (buttonName != null){
+		JButton temp = new JButton();
+		temp.setName(buttonName);
+		AbstractButton tool = findElement(temp);
+		if (tool != null){
 			if (listener != null){
-				int length = getComponentCount();
-				for (int i=0; i< length; ++i){
-					if (getComponent(i).getName().equals(buttonName)){
-						AbstractButton temp = (AbstractButton)getComponent(i);
-						temp.addActionListener(listener);
-						return true;
-					}
-				}
-				return false;
+				tool.addActionListener(listener);
+				return true;
 			} else{
-				throw new LogicException(Errors.NULL_ELEMENT, new ExceptionElement("Нулевой элемент", this.getClass()));
+				return false;
 			}
 		} else{
-			throw new LogicException(Errors.NULL_ELEMENT, new ExceptionElement("Нулевой элемент", this.getClass()));
+			return false;
 		}
 	}
-
-	@Override
-	public boolean addListenerToComponent(int position, ActionListener listener) throws LogicException {
-		int length = getComponentCount();
-		if ( position >= 0 && position < length ){
-			if (listener != null){
-				try{
-					AbstractButton temp = (AbstractButton)getComponent(position);
-					temp.addActionListener(listener);
-					return true;
-				} catch(Exception e){
-					return false;
-				}
-			} else{
-				throw new LogicException(Errors.NULL_ELEMENT, new ExceptionElement("Нулевой элемент", this.getClass()));
+	
+	public AbstractButton findElement(AbstractButton button){
+		if (button != null){
+			int size = getComponentCount();
+			for (int i =0; i < size; ++i){
+				if (getComponent(i).getName().equalsIgnoreCase(button.getName())){
+					return (AbstractButton)getComponent(i);
+				} 
 			}
-		} else{
-			throw new LogicException(Errors.OUT_OF_BOUNDS, new ExceptionElement("Позиция элемента не попадает в границы", this.getClass()));
 		}
+		return null;
 	}
 }

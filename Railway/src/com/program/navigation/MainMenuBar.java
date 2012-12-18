@@ -5,12 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.AbstractButton;
+import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import com.program.exceptions.Errors;
-import com.program.exceptions.ExceptionElement;
 import com.program.exceptions.LogicException;
 
 
@@ -27,6 +26,7 @@ public class MainMenuBar extends JMenuBar implements IBar{
         setFont(font);
         
         JMenu fileMenu = new JMenu("Файл");
+        	fileMenu.setName("filemenu");
         
         	JMenu newMenu = new JMenu("Новый");
         
@@ -56,66 +56,48 @@ public class MainMenuBar extends JMenuBar implements IBar{
 
     @Override
 	public boolean addListenerToComponent(AbstractButton button, ActionListener listener) throws LogicException {
-		if (button != null){
+		AbstractButton menu = findElement(button);
+    	
+    	if (menu != null){
 			if (listener != null){
-				int position = getComponentIndex(button);
-				
-				if (position >= 0){
-					try {
-						AbstractButton temp = (AbstractButton)getComponent(position);
-						temp.addActionListener(listener);
-						return true;
-					} catch (Exception e){
-						return false;
-					}
-				}
-				return false;
+				menu.addActionListener(listener);
+				return true;
 			} else {
-				throw new LogicException(Errors.NULL_ELEMENT, new ExceptionElement("Нулевой элемент", this.getClass()));
+				return false;
 			}
 		} else{
-			throw new LogicException(Errors.NULL_ELEMENT, new ExceptionElement("Нулевой элемент", this.getClass()));
+			return false;
 		}
 	}
 
 	@Override
 	public boolean addListenerToComponent(String buttonName, ActionListener listener) throws LogicException {
-		if (buttonName != null){
+		JButton temp = new JButton();
+		temp.setName(buttonName);
+		AbstractButton menu = findElement(temp);
+		if (menu != null){
 			if (listener != null){
-				int length = getComponentCount();
-				for (int i=0; i< length; ++i){
-					if (getComponent(i).getName().equals(buttonName)){
-						AbstractButton temp = (AbstractButton)getComponent(i);
-						temp.addActionListener(listener);
-						return true;
-					}
-				}
-				return false;
+				menu.addActionListener(listener);
+				return true;
 			} else{
-				throw new LogicException(Errors.NULL_ELEMENT, new ExceptionElement("Нулевой элемент", this.getClass()));
+				return false;
 			}
 		} else{
-			throw new LogicException(Errors.NULL_ELEMENT, new ExceptionElement("Нулевой элемент", this.getClass()));
+			return false;
 		}
 	}
-
-	@Override
-	public boolean addListenerToComponent(int position, ActionListener listener) throws LogicException {
-		int length = getComponentCount();
-		if ( position >= 0 && position < length ){
-			if (listener != null){
-				try{
-					AbstractButton temp = (AbstractButton)getComponent(position);
-					temp.addActionListener(listener);
-					return true;
-				} catch(Exception e){
-					return false;
+	
+	public AbstractButton findElement(AbstractButton button){
+		if (button != null){
+			int size = getMenuCount();
+			for (int i =0; i < size; ++i){
+				if (getMenu(i).getName().equalsIgnoreCase(button.getName())){
+					return getMenu(i);
+				} else{
+					findElement(getMenu(i));
 				}
-			} else{
-				throw new LogicException(Errors.NULL_ELEMENT, new ExceptionElement("Нулевой элемент", this.getClass()));
 			}
-		} else{
-			throw new LogicException(Errors.OUT_OF_BOUNDS, new ExceptionElement("Позиция элемента не попадает в границы", this.getClass()));
 		}
+		return null;
 	}
 }

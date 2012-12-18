@@ -1,9 +1,13 @@
 package com.program;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
+import com.program.exceptions.LogicException;
 import com.program.navigation.MainMenuBar;
 import com.program.navigation.MainToolBar;
 import com.program.navigation.StatusBar;
@@ -14,7 +18,7 @@ public class DoWork {
 	private static MainMenuBar menu = new MainMenuBar();
 	private static MainToolBar toolBar = new MainToolBar();
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws LogicException{
 		JFrame frame = new JFrame();
 		frame.setSize(400, 400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
